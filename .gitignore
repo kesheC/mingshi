@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+data/cache/
+data/tmp/
+_*.py
+_*.json
+_*.md
+_server*.log
+.DS_Store
+site/

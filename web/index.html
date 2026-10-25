@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>明势 Míngshì · A 股市场大势研判</title>
+<meta name="description" content="基于行情结构、市场宽度、风格轮动、估值、流动性、情绪与事件的 A 股市场状态研判">
+<link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230b0f17'/><path d='M6 22 L12 13 L17 18 L26 8' stroke='%234f9dff' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" class="brand-mark" aria-hidden="true">
+      <path d="M4 23 L11 12 L16.5 18 L28 6" fill="none" stroke="currentColor" stroke-width="2.6"
+            stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="11" cy="12" r="2.1" fill="currentColor"/>
+      <circle cx="16.5" cy="18" r="2.1" fill="currentColor"/>
+    </svg>
+    <div class="brand-text">
+      <span class="brand-name">明势</span>
+      <span class="brand-sub">Míngshì · 市场大势研判</span>
+    </div>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab is-on" data-go="sec-state">状态</button>
+    <button class="tab" data-go="sec-dims">七维证据</button>
+    <button class="tab" data-go="sec-contra">矛盾</button>
+    <button class="tab" data-go="sec-cond">条件</button>
+    <button class="tab" data-go="sec-rot">轮动</button>
+    <button class="tab" data-go="sec-health">数据</button>
+  </nav>
+
+  <div class="topbar-right">
+    <div class="asof">
+      <span class="asof-label">交易日</span>
+      <span class="asof-date" id="asOf">—</span>
+    </div>
+    <button class="btn btn-ghost" id="btnRefresh" title="重新取数并研判">
+      <span class="btn-ico">↻</span><span>刷新</span>
+    </button>
+  </div>
+</header>
+
+<main id="app" class="app" aria-live="polite">
+
+  <!-- 载入态 -->
+  <section id="loading" class="loading">
+    <div class="loading-ring"></div>
+    <p class="loading-title">正在取数与研判…</p>
+    <p class="loading-sub">行情快照 → 七维证据 → 状态分类 → 矛盾检测 → 条件推演</p>
+  </section>
+
+  <div id="content" class="content" hidden>
+
+    <!-- ── 状态总览 ─────────────────────────────────────────── -->
+    <section id="sec-state" class="sec">
+      <div class="hero">
+        <div class="hero-main">
+          <div class="hero-kicker">
+            <span class="dot"></span>当前市场状态
+            <span class="badge" id="substateBadge" hidden></span>
+          </div>
+          <h1 class="state-name" id="stateName">—</h1>
+          <p class="state-summary" id="stateSummary">—</p>
+          <div class="hero-note" id="stateNote"></div>
+        </div>
+
+        <div class="hero-side">
+          <div class="gauge">
+            <svg viewBox="0 0 120 120" class="gauge-svg" aria-hidden="true">
+              <circle cx="60" cy="60" r="50" class="gauge-track"/>
+              <circle cx="60" cy="60" r="50" class="gauge-fill" id="gaugeFill"/>
+            </svg>
+            <div class="gauge-inner">
+              <span class="gauge-num" id="confNum">—</span>
+              <span class="gauge-cap">置信度</span>
+            </div>
+          </div>
+          <div class="axes">
+            <div class="axis-row">
+              <span class="axis-name">趋势强度</span>
+              <div class="axis-bar"><i id="barTrend"></i></div>
+              <span class="axis-val" id="valTrend">—</span>
+            </div>
+            <div class="axis-row">
+              <span class="axis-name">风险偏好</span>
+              <div class="axis-bar"><i id="barRisk"></i></div>
+              <span class="axis-val" id="valRisk">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <h2>状态地图</h2>
+            <span class="card-hint">横轴趋势强度 · 纵轴风险偏好 · 当前点高亮</span>
+          </div>
+          <div class="map-wrap">
+            <svg viewBox="0 0 320 300" class="state-map" id="stateMap"></svg>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>七维雷达</h2>
+            <span class="card-hint">0 为中性 · 外圈为强</span>
+          </div>
+          <div class="radar-wrap">
+            <svg viewBox="0 0 340 300" class="radar" id="radar"></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-ask">
+        <div class="card-head">
+          <h2>追问</h2>
+          <span class="card-hint">基于本页证据作答 · 附引用</span>
+        </div>
+        <div class="ask-box">
+          <div class="ask-chips" id="askChips"></div>
+          <form class="ask-form" id="askForm">
+            <input id="askInput" type="text" autocomplete="off"
+                   placeholder="例如：当前最主要的矛盾是什么？什么条件下要改变判断？">
+            <button class="btn btn-primary" type="submit">提问</button>
+          </form>
+          <div class="ask-log" id="askLog"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 七维证据 ─────────────────────────────────────────── -->
+    <section id="sec-dims" class="sec">
+      <div class="sec-head">
+        <h2 class="sec-title">七维证据</h2>
+        <p class="sec-desc">每一维都由可复现的规则从原始行情算出，读数区间 −1（最弱）到 +1（最强）。点击卡片展开口径与局限。</p>
+      </div>
+      <div class="dims" id="dims"></div>
+    </section>
+
+    <!-- ── 矛盾 ─────────────────────────────────────────────── -->
+    <section id="sec-contra" class="sec">
+      <div class="sec-head">
+        <h2 class="sec-title">主要矛盾</h2>
+        <p class="sec-desc">当两个维度的证据指向相反方向，市场的「主线」往往就藏在这里。矛盾不是错误，是需要被解释的信号。</p>
+      </div>
+      <div class="contra" id="contra"></div>
+    </section>
+
+    <!-- ── 条件 ─────────────────────────────────────────────── -->
+    <section id="sec-cond" class="sec">
+      <div class="sec-head">
+        <h2 class="sec-title">判断可能改变的条件</h2>
+        <p class="sec-desc">先写下「什么情况下我错了」。<b>已成立</b>的条件说明当前判断的数据前提已经就位；<b>待观察</b>的条件按距离阈值远近排序，越近越需要盯住。</p>
+      </div>
+      <div class="conds" id="conds"></div>
+      <div class="triggers" id="triggers"></div>
+    </section>
+
+    <!-- ── 轮动 ─────────────────────────────────────────────── -->
+    <section id="sec-rot" class="sec">
+      <div class="sec-head">
+        <h2 class="sec-title">风格与轮动</h2>
+        <p class="sec-desc">指数的相对强弱与行业短期收益，用来判断资金在什么方向聚集。</p>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>指数走势</h2><span class="card-hint">近 120 交易日 · 归一化</span></div>
+          <div id="indexLines" class="lines"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>两融余额</h2><span class="card-hint">近 60 交易日 · 亿元</span></div>
+          <div id="marginLine" class="lines"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>行业 5 日收益</h2><span class="card-hint">红涨绿跌 · 点击切换 5/20 日</span></div>
+        <div class="seg" id="sectorSeg">
+          <button class="seg-btn is-on" data-r="r5">5 日</button>
+          <button class="seg-btn" data-r="r20">20 日</button>
+        </div>
+        <div class="heat" id="heat"></div>
+      </div>
+    </section>
+
+    <!-- ── 数据健康 ─────────────────────────────────────────── -->
+    <section id="sec-health" class="sec">
+      <div class="sec-head">
+        <h2 class="sec-title">数据与口径</h2>
+        <p class="sec-desc">研判的可信度取决于数据可信度。这里如实展示取数成功率、数据源与失败项。</p>
+      </div>
+      <div class="health-stats" id="healthStats"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>数据源</h2></div>
+          <div id="providers" class="prov-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>取数日志</h2><span class="card-hint">最近 40 条</span></div>
+          <div id="fetchLog" class="loglist"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>事件池</h2><span class="card-hint">仅用于识别题材方向 · 已过滤噪音</span></div>
+        <div id="events" class="events"></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <span id="footLegal">本内容为市场状态描述与条件推演，基于公开行情数据，不构成投资建议，不预测涨跌，不提供买卖与仓位建议。</span>
+  <span class="foot-meta" id="footMeta"></span>
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

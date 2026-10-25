@@ -1,0 +1,66 @@
+{
+ "product": "mingshi-dashboard",
+ "version": "2.0.0",
+ "as_of": "2026-10-23",
+ "generated_at": "2026-10-25 22:03:16",
+ "build_at": "2026-10-25T22:04:16",
+ "mode": "static",
+ "counts": {
+  "dimensions": 7,
+  "facts": 51,
+  "phases": 5,
+  "industries": 49
+ },
+ "source": {
+  "kind": "snapshot",
+  "path": "E:\\deepseek_workspace\\D\\mingshi\\data\\snapshots\\2026-10-23.json",
+  "compat": false,
+  "original_version": "2.0.0"
+ },
+ "notes": [],
+ "files": {
+  "index.html": {
+   "bytes": 15690,
+   "sha256": "7de4653117b97bb143e53a7740a306b0432ea2a937d0c034f436165feb8df685"
+  },
+  "web/style.css": {
+   "bytes": 33615,
+   "sha256": "b0bd3b5dbe23df671c303b850bcb2cff9da21d21fb080a43390ba6d4f14c269c"
+  },
+  "web/app.js": {
+   "bytes": 60109,
+   "sha256": "2a116dfc1cf4aa148965fa3ed5b7bb81d9795a45ba157fc734ad487a98e79465"
+  },
+  "web/research.js": {
+   "bytes": 39783,
+   "sha256": "8c3c2c3378b3fa98a6414d62da27dd4612fe7b4a5fd27ced0bccaf6aa8ae9e06"
+  },
+  "data/dashboard.json": {
+   "bytes": 157463,
+   "sha256": "2f0d24adf2936e938f5cb46edd3b00dcd1308d0d24b9f3f4ba61dbf5a20b612a"
+  },
+  "data/history.json": {
+   "bytes": 37005,
+   "sha256": "a18e8820bc051085ee54fe1ed5836d0a8e203dd7a9768324f02e3595a713365a"
+  },
+  "data/embedded.js": {
+   "bytes": 127261,
+   "sha256": "92e9ff99c86e7a3096fee71fca95a39ce33649df07da232ef4500c4144b8954d"
+  },
+  "report.md": {
+   "bytes": 30596,
+   "sha256": "45d2d2910f1701d682e6d4a81cd1fc83c365ea5d21bd09b960e6c1f4f125a76a"
+  }
+ },
+ "checks": {
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "files": 9,
+  "bytes": 503003,
+  "version": "2.0.0",
+  "as_of": "2026-10-23",
+  "gate": "partial",
+  "manifest_build_at": "2026-10-25T22:04:16"
+ }
+}

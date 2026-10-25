@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AI 驱动的股票市场大势研判：三层认识论、七维证据、取数计划与质量闸门。本页面仅描述市场状态与判断条件，不构成投资建议。">
+<meta name="color-scheme" content="dark">
+<meta name="mingshi-mode" content="static">
+<meta name="mingshi-build" content="2026-10-25T22:04:16">
+<title>市场大势研判 · AI 驱动的状态刻画</title>
+<link rel="stylesheet" href="web/style.css">
+</head>
+<body>
+<a class="skip-link" href="#app">跳到正文</a>
+
+<header class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#4f9dff"/><stop offset="1" stop-color="#16c784"/>
+        </linearGradient>
+      </defs>
+      <path d="M3 22 L10 15 L15 19 L22 9 L29 13" fill="none" stroke="url(#bg1)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="22" cy="9" r="2.6" fill="#16c784"/>
+    </svg>
+    <div class="brand-txt">
+      <strong>大势研判</strong>
+      <span>三层认识论 · 七维证据 · 可溯源</span>
+    </div>
+  </div>
+
+  <nav class="tabs" id="tabs" aria-label="页面分区">
+    <button class="tab is-on" data-go="sec-state" type="button">状态</button>
+    <button class="tab" data-go="sec-dims" type="button">证据</button>
+    <button class="tab" data-go="sec-contra" type="button">矛盾</button>
+    <button class="tab" data-go="sec-cond" type="button">条件</button>
+    <button class="tab" data-go="sec-plan" type="button">取数计划</button>
+    <button class="tab" data-go="sec-industry" type="button">行业</button>
+    <button class="tab" data-go="sec-style" type="button">风格</button>
+    <button class="tab" data-go="sec-history" type="button">历史</button>
+    <button class="tab" data-go="sec-health" type="button">数据</button>
+  </nav>
+
+  <div class="top-right">
+    <span class="mode-chip" id="modeChip" hidden></span>
+    <span class="asof" id="asOf" title="数据截止交易日">—</span>
+    <button class="btn btn-primary" id="btnRefresh" type="button" title="重新取数并研判">刷新研判</button>
+  </div>
+</header>
+
+<main class="app" id="app">
+  <div class="static-badge" id="staticBadge" hidden role="status"></div>
+
+  <div class="gate-banner" id="gateBanner" hidden>
+    <div class="gate-head">
+      <span class="gate-pill" id="gateLevel">—</span>
+      <strong id="gateTitle">数据质量闸门</strong>
+      <span class="gate-cap" id="gateCap"></span>
+    </div>
+    <p class="gate-reason" id="gateReason"></p>
+    <p class="gate-missing" id="gateMissing" hidden></p>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="spinner" aria-hidden="true"></div>
+    <p>正在取数并研判…</p>
+    <p class="loading-sub">首次运行会抓取行情、行业、两融与新闻，可能需要十几秒。</p>
+  </div>
+
+  <div id="err" class="err" hidden role="alert"></div>
+
+  <div id="content" hidden>
+    <!-- ============================ 一、状态 -->
+    <section class="sec" id="sec-state" aria-labelledby="h-state">
+      <div class="sec-head">
+        <h2 class="sec-title" id="h-state">市场状态</h2>
+        <p class="sec-desc">七维证据合成后的判断层结论。置信度由覆盖、一致性、新鲜度合成，不由文案决定；数据不足时结论会被明确降级。</p>
+      </div>
+
+      <div class="grid-2 hero-grid">
+        <div class="card hero">
+          <div class="hero-top">
+            <div class="badge-row">
+              <span class="badge" id="stateBadge">—</span>
+              <span class="lbadge judgment" title="判断层：在事实与归纳之上的研判，附置信度与证伪条件">判断</span>
+              <span class="badge badge-soft" id="stateQuadrant" hidden></span>
+            </div>
+            <div class="hero-asof" id="stateAsOf"></div>
+          </div>
+          <h1 class="state-name" id="stateName">—</h1>
+          <p class="state-summary" id="stateSummary"></p>
+          <p class="state-note" id="stateNote"></p>
+          <p class="state-limit" id="stateLimit" hidden></p>
+
+          <div class="hero-meters">
+            <div class="gauge-wrap">
+              <svg class="gauge" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+                <circle cx="60" cy="60" r="50" class="gauge-track"></circle>
+                <circle cx="60" cy="60" r="50" class="gauge-fill" id="gaugeFill"></circle>
+              </svg>
+              <div class="gauge-num"><strong id="confNum">—</strong><span>置信度</span></div>
+              <div class="gauge-cap" id="capMark" hidden></div>
+            </div>
+            <div class="axes">
+              <div class="axis">
+                <div class="axis-head"><span>趋势轴</span><b id="trendLabel">—</b></div>
+                <div class="axis-bar"><i id="barTrend" class="axis-fill" style="left:50%"></i></div>
+                <div class="axis-val" id="valTrend">—</div>
+              </div>
+              <div class="axis">
+                <div class="axis-head"><span>风险偏好轴</span><b id="riskLabel">—</b></div>
+                <div class="axis-bar"><i id="barRisk" class="axis-fill risk" style="left:50%"></i></div>
+                <div class="axis-val" id="valRisk">—</div>
+              </div>
+              <p class="axis-hint">横轴为合成分数（-1 ~ +1），刻度仅用于定位状态，不是涨跌预测。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ask-card">
+          <div class="card-head">
+            <h3>追问这份研判</h3>
+            <span class="hint" id="askHint">每条回答都带引用，可点击定位证据</span>
+          </div>
+          <div class="chips" id="askChips"></div>
+          <form class="ask-form" id="askForm" autocomplete="off">
+            <label class="sr-only" for="askInput">输入你的问题</label>
+            <input id="askInput" name="question" type="text" maxlength="500" placeholder="例如：什么条件会改变当前判断？" aria-describedby="askHint">
+            <button class="btn btn-primary" type="submit" id="askSubmit">追问</button>
+          </form>
+          <div class="qa-log" id="askLog" aria-live="polite" aria-relevant="additions"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>状态地图</h3><span class="hint">趋势 × 风险偏好</span></div>
+          <div class="map-wrap"><svg id="stateMap" viewBox="0 0 320 260" role="img" aria-label="市场状态地图：横轴趋势，纵轴风险偏好"></svg></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>七维雷达</h3><span class="hint">归纳层：每轴由多条事实合成</span></div>
+          <div class="map-wrap"><svg id="radar" viewBox="0 0 320 300" role="img" aria-label="七维证据雷达图"></svg></div>
+        </div>
+      </div>
+
+      <div class="card epi-card">
+        <div class="card-head">
+          <h3>三层认识论</h3>
+          <span class="hint">事实 → 归纳 → 判断，每层都可追溯到来源</span>
+        </div>
+        <div class="epi-legend" id="epiLegend"></div>
+        <div class="epi-stats" id="epiStats"></div>
+      </div>
+    </section>
+
+    <!-- ============================ 二、证据 -->
+    <section class="sec" id="sec-dims" aria-labelledby="h-dims">
+      <div class="sec-head">
+        <h2 class="sec-title" id="h-dims">七维证据</h2>
+        <p class="sec-desc">每个维度是归纳层读数；点开任一事实行，可看到它的来源、时点与口径，以及原始字段路径。</p>
+      </div>
+      <div id="dims" class="dims"></div>
+    </section>
+
+    <!-- ============================ 三、矛盾 -->
+    <section class="sec" id="sec-contra" aria-labelledby="h-contra">
+      <div class="sec-head">
+        <h2 class="sec-title" id="h-contra">主要矛盾</h2>
+        <p class="sec-desc">维度之间互相打架的地方。矛盾不藏起来：它决定当前解释是否唯一。</p>
+      </div>
+      <div id="contra" class="contra-list"></div>
+    </section>
+
+    <!-- ============================ 四、条件 -->
+    <section class="sec" id="sec-cond" aria-labelledby="h-cond">
+      <div class="sec-head">
+        <h2 class="sec-title" id="h-cond">判断可能改变的条件</h2>
+        <p class="sec-desc">这些是状态条件，不是买卖信号。条件满足时应当重新评估，而不是照着做交易。</p>
+      </div>
+      <div class="card"><div id="conds" class="cond-list"></div></div>
+      <div class="card">
+        <div class="card-head"><h3>已触发条件</h3><span class="hint">多条同时触发时更需要复核</span></div>
+        <div id="triggers" class="triggers"></div>
+      </div>
+    </section>
+
+    <!-- ============================ 五、取数计划 -->
+    <section class="sec" id="sec-plan" aria-labelledby="h-plan">
+      <div class="sec-head">
+        <h2 class="sec-title" id="h-plan">取数计划与质量闸门</h2>
+        <p class="sec-desc">先列需求，再定主备源；实际用了哪个源、取到多少行、是否降级，全部公开。数据不达标时，上面的研判会被降级而不是假装完备。</p>
+      </div>
+      <div class="card">
+        <div class="plan-top">
+          <div><span class="k">目标</span><p id="planObjective">—</p></div>
+          <div><span class="k">结果</span><p id="planSummary">—</p></div>
+        </div>
+        <p class="plan-note" id="planNote" hidden></p>
+        <div class="table-wrap">
+          <table class="table plan-table">
+            <caption class="sr-only">取数计划明细：能力、需求、主备源、实际源、状态、行数、耗时、数据时点与降级链</caption>
+            <thead>
+              <tr>
+                <th scope="col">能力</th>
+                <th scope="col">需求</th>
+                <th scope="col">主备源</th>
+                <th scope="col">实际源</th>
+                <th scope="col">状态</th>
+                <th scope="col" class="num">行数</th>
+                <th scope="col" class="num">耗时</th>
+                <th scope="col">as_of</th>
+                <th scope="col">降级链 / 错误</th>
+              </tr>
+            </thead>
+            <tbody id="planRows"><tr><td colspan="9" class="empty">暂无取数计划</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>质量闸门</h3><span class="hint">full / partial / insufficient</span></div>
+        <div id="planGate" class="gate-detail"></div>
+      </div>
+    </section>
+
+    <!-- ============================ 六、行业 -->
+    <section class="sec" id="sec-industry" aria-labelledby="h-industry">
+      <div class="sec-head">
+        <h2 class="sec-title" id="h-industry">行业强弱</h2>
+        <p class="sec-desc">横截面排序：近 5 日、近 20 日、是否站上 20 日均线。热力色只表达相对强弱，不预测轮动。</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>行业排行</h3><span class="hint" id="industryMeta">—</span></div>
+        <div class="table-wrap">
+          <table class="table industry-table">
+            <caption class="sr-only">行业指数近 5 日与近 20 日涨跌幅、均线位置与排名</caption>
+            <thead>
+              <tr>
+                <th scope="col" class="num">#</th>
+                <th scope="col">行业</th>
+                <th scope="col" class="num">近 5 日</th>
+                <th scope="col" class="num">近 20 日</th>
+                <th scope="col">20 日热力</th>
+                <th scope="col">站上 MA20</th>
+                <th scope="col" class="num">上涨占比</th>
+              </tr>
+            </thead>
+            <tbody id="industryRows"><tr><td colspan="7" class="empty">暂无行业数据</td></tr></tbody>
+          </table>
+        </div>
+        <p class="plan-note" id="industryNote" hidden></p>
+      </div>
+    </section>
+
+    <!-- ============================ 七、风格 -->
+    <section class="sec" id="sec-style" aria-labelledby="h-style">
+      <div class="sec-head">
+        <h2 class="sec-title" id="h-style">风格对比</h2>
+        <p class="sec-desc">大小盘、价值成长在同一窗口内的相对强弱。风格没有好坏，只有与当前状态是否匹配。</p>
+      </div>
+      <div class="grid-2" id="styleCards"></div>
+    </section>
+
+    <!-- ============================ 八、历史 -->
+    <section class="sec" id="sec-history" aria-labelledby="h-history">
+      <div class="sec-head">
+        <h2 class="sec-title" id="h-history">历史阶段</h2>
+        <p class="sec-desc" id="historyMeta">代理口径：用指数日线切分阶段，不是状态模型的历史回溯。点击任一段查看区间、波动分位与「与今天的差异」。</p>
+      </div>
+      <div class="card">
+        <div class="history-timeline" id="historyTimeline" role="tablist" aria-label="历史阶段时间轴"></div>
+        <div class="history-detail" id="historyDetail" role="tabpanel" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ============================ 九、数据 -->
+    <section class="sec" id="sec-health" aria-labelledby="h-health">
+      <div class="sec-head">
+        <h2 class="sec-title" id="h-health">数据与口径</h2>
+        <p class="sec-desc">数据健康、源可用性、抓取日志与事件列表。研判的可信度上限由这里决定。</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>健康总览</h3><span class="hint" id="healthHint"></span></div>
+        <div class="health-stats" id="healthStats"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>数据质量</h3><span class="hint">覆盖率、新鲜度、冲突与缺失</span></div>
+        <div id="qualityPanel" class="quality-panel"></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>数据源</h3><span class="hint">按能力列出可用性</span></div>
+          <div class="prov-list" id="providers"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>抓取日志</h3><span class="hint">最近 40 条</span></div>
+          <div class="loglist" id="fetchLog"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>事件与新闻</h3><span class="hint">仅作事实记录</span></div>
+        <div class="events" id="events"></div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <p id="footLegal">本页面由程序根据公开行情数据生成，仅用于市场状态研究与技术演示，不构成任何投资建议。市场有风险，决策需独立。</p>
+    <p id="footMeta">—</p>
+    <p id="footStatic" hidden></p>
+  </footer>
+</main>
+
+<script src="data/embedded.js"></script>
+<script src="web/research.js"></script>
+<script src="web/app.js"></script>
+</body>
+</html>
